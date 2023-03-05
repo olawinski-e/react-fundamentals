@@ -19,20 +19,107 @@ function UsernameForm({onSubmitUsername}) {
 
   // 🐨 make sure to associate the label to the input.
   // to do so, set the value of 'htmlFor' prop of the label to the id of input
+
+  // --------------- V1
+  //   const [name, setName] = React.useState('')
+
+  //   const handleSubmit = (event) => {
+  //     event.preventDefault()
+  //     onSubmitUsername(name)
+  //   }
+
+  //   return (
+  //     <form onSubmit={handleSubmit}>
+  //       <div>
+  //         <label htmlFor="usernameInput">Username:</label>
+  //         <input
+  //           id="usernameInput"
+  //           type="text"
+  //           onChange={event => setName(event.target.value)}
+  //           value={name}
+  //         />
+  //       </div>
+  //       <button type="submit">Submit</button>
+  //     </form>
+  //   )
+  // }
+
+  // const App = () => {
+  //   const onSubmitUsername = username => alert(`You entered: ${username}`)
+  //   return <UsernameForm onSubmitUsername={onSubmitUsername} />
+  // }
+
+  // --------------- V2
+  //   const refName = React.useRef()
+
+  //   const handleSubmit = event => {
+  //     event.preventDefault()
+  //     onSubmitUsername(refName.current.value)
+  //   }
+
+  //   return (
+  //     <form onSubmit={handleSubmit}>
+  //       <div>
+  //         <label htmlFor="usernameInput">Username:</label>
+  //         <input id="usernameInput" type="text" ref={refName} />
+  //       </div>
+  //       <button type="submit">Submit</button>
+  //     </form>
+  //   )
+  // }
+
+  // const App = () => {
+  //   const onSubmitUsername = username => alert(`You entered: ${username}`)
+  //   return <UsernameForm onSubmitUsername={onSubmitUsername} />
+  // }
+
+  // --------------- V3
+  const [name, setName] = React.useState('')
+  const [error, setError] = React.useState(null)
+
+  const handleSubmit = event => {
+    event.preventDefault()
+    onSubmitUsername(name)
+  }
+
+  const handleChange = event => {
+    const {value} = event.target
+    setName(value)
+    value === value.toLowerCase() ? setError(false) : setError(true)
+    setTimeout(() => {
+      setError(false)
+    }, '2000')
+    setName(value.toLowerCase())
+  }
+
   return (
-    <form>
+    <form onSubmit={handleSubmit}>
       <div>
-        <label>Username:</label>
-        <input type="text" />
+        <label htmlFor="usernameInput">Username:</label>
+        <input
+          id="usernameInput"
+          type="text"
+          onChange={handleChange}
+          value={name}
+        />
       </div>
-      <button type="submit">Submit</button>
+      <button disabled={Boolean(error)} type="submit">
+        Submit
+      </button>
+      <p role="alert" style={{color: 'red'}}>
+        {error ? 'Sorry man but username name can only be lowercase' : null}
+      </p>
     </form>
   )
 }
 
-function App() {
+const App = () => {
   const onSubmitUsername = username => alert(`You entered: ${username}`)
-  return <UsernameForm onSubmitUsername={onSubmitUsername} />
+  return (
+    <div style={{minWidth: 400}}>
+      <UsernameForm onSubmitUsername={onSubmitUsername} />
+    </div>
+  )
 }
 
 export default App
